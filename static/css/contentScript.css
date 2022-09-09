@@ -1,0 +1,8 @@
+#yybear_pop {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 200px;
+  height: 300px;
+  z-index: 9999;
+}
