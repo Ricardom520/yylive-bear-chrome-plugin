@@ -23,11 +23,28 @@ class Canvas implements CanvasStruct {
 
   constructor() {
     this.canvas = document.getElementById('yylive_bear') as HTMLCanvasElement
-    console.log('yylive_bear:', this.canvas)
   }
 
   init() {
     this.canvasRender()
+  }
+
+  public dbclick(fn: Function) {
+    this.canvas.addEventListener('dblclick', () => {
+      const audioDom = document.createElement('audio')
+      audioDom.src = 'https://web.yystatic.com/project/nearlive-static/mobile/voices/voice_02.mp3'
+      audioDom.autoplay = true
+      document.body.appendChild(audioDom)
+
+      audioDom.addEventListener('ended', function() {
+        document.body.removeChild(audioDom)
+      })
+
+      fn()
+      const ctx: CanvasRenderingContext2D = this.canvas.getContext('2d') as CanvasRenderingContext2D
+
+      this.drawChatBox(ctx,10,10,100,100)
+    })
   }
 
   private canvasRender() {
@@ -110,7 +127,6 @@ class Canvas implements CanvasStruct {
 
     // 右眼
     const canvas = this.canvas
-    console.log('this.canvas', canvas)
     rightEye()
     function rightEye() {
       ctx.save()
@@ -161,10 +177,9 @@ class Canvas implements CanvasStruct {
       }
       paint()
       // setInterval(paint, 50)
-      canvas.addEventListener('dblclick', () => {
+      canvas.addEventListener('click', () => {
         const timer = setInterval(() => {
-          if (num === 3) {
-            console.log(num)
+          if (num === 1) {
             clearInterval(timer)
             num = 0
           } else {
@@ -216,6 +231,18 @@ class Canvas implements CanvasStruct {
       context.fillStyle = val
       context.fill()
     }
+  }
+
+  private drawChatBox(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) {
+    ctx.beginPath()
+    ctx.moveTo(x, y + 0.35 * h)
+    ctx.quadraticCurveTo(x + 0.04 * w, y + 0.02 * h, x + 0.5 * w, y)
+    ctx.quadraticCurveTo(x + 0.96 * w, y + 0.02 * h, x + w, y + 0.35 * h)
+    ctx.quadraticCurveTo(x + w, y + 0.7 * h, x + 0.58 * w, y + 0.72 * h)
+    ctx.quadraticCurveTo(x + 0.5 * w, y + 0.9 * h, x + 0.2 * w, y + h)
+    ctx.quadraticCurveTo(x + 0.38 * w, y + 0.80 * h, x + 0.38 * w, y + 0.72 * h)
+    ctx.quadraticCurveTo(x, y + 0.70 * h, x, y + 0.35 * h)
+    ctx.stroke()
   }
 }
 
