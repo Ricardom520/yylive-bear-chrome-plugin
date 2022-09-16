@@ -14,7 +14,7 @@ class YYLiveBear {
     dom.id = 'yybear_pop'
 
     var temp = function() {
-      return `<canvas id='yylive_bear'></canvas>`
+      return `<canvas id='yylive_bear' width="200" height="300"></canvas>`
     }
 
     dom.appendChild(this.createFrag(temp()))
