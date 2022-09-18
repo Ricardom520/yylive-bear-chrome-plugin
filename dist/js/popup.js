@@ -1,0 +1,1 @@
+var switchBtnDom=document.getElementById("switchBtn");function onSwitchStatus(t){var e=t.target;console.log(e.dataset.active);var a="true"!==e.dataset.active,n=e.getElementsByClassName("txt")[0],s=e.getElementsByClassName("icon")[0];n.innerText=a?"关闭":"开启",s.src=a?"../img/pop_open.png":"../img/pop_close.png",e.dataset.active=a}switchBtnDom.onclick=onSwitchStatus;

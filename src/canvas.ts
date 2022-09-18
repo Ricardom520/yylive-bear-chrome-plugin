@@ -43,7 +43,7 @@ class Canvas implements CanvasStruct {
       fn()
       const ctx: CanvasRenderingContext2D = this.canvas.getContext('2d') as CanvasRenderingContext2D
 
-      this.drawChatBox(ctx,10,100,100,100)
+      this.drawChatBox(ctx,5,120,150,100)
     })
   }
 
@@ -324,7 +324,11 @@ class Canvas implements CanvasStruct {
     ctx.quadraticCurveTo(x + 0.5 * w, y + 0.9 * h, x + 0.6 * w, y + h)
     ctx.quadraticCurveTo(x + 0.38 * w, y + 0.80 * h, x + 0.38 * w, y + 0.72 * h)
     ctx.quadraticCurveTo(x, y + 0.70 * h, x, y + 0.35 * h)
+    ctx.closePath()
     ctx.stroke()
+    ctx.font = '14px Verdana'
+    ctx.fillStyle = 'black'
+    ctx.fillText('按着回车说话~', 30, 160)
   }
 }
 

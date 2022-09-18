@@ -38,7 +38,7 @@ module.exports = {
     fallback: {
       process: require.resolve('process/browser'),
     },
-    extensions: ['.ts', '.less']
+    extensions: ['.ts', '.less', '.js']
   },
   module: {
     rules: [
