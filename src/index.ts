@@ -1,37 +1,10 @@
-import axios from 'axios'
-import webSocket, { Socket } from 'socket.io-client'
 import Canvas from './canvas'
-import { h5recorder } from './h5recorder'
+import Recorder from './libs/recorder'
 
 class YYLiveBear {
-  private mediaRecorder: MediaRecorder | null
-  private socketClient: Socket
 
   constructor() {
     this.init()
-    // this.socketInit()
-
-    this.mediaRecorder = null
-  }
-
-  private socketInit() {
-    console.log('socketInit')
-    this.socketClient = webSocket('http://127.0.0.1:7001', {
-      query: {
-        test: 'Hello World'
-      }
-    })
-    this.socketClient.on('connect', () => {
-      console.log('socket connected!')
-    })
-
-    this.socketClient.on('res', (msg) => {
-      console.log(msg)
-    })
-
-    this.socketClient.on('disconnect', msg => {
-      console.log(msg)
-    })
   }
 
   private init() {
@@ -57,87 +30,50 @@ class YYLiveBear {
     const canvas = new Canvas()
     canvas.init()
     canvas.dbclick(() => this.getAudioRecorder())
-    // canvas.dbclick(() => {})
   }
 
   private async getAudioRecorder() {
-    if (!this.mediaRecorder) {
-      if (!navigator.mediaDevices.getUserMedia) {
-        alert('很抱歉，当前浏览器不支持该功能~')
-        return
-      }
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true
-      })
-      console.log('stream:', stream)
-      if (!stream) {
-        console.error('授权失败')
-        return
-      }
-      console.log('授权成功')
-      this.mediaRecorder = new MediaRecorder(stream)
-    }
-    console.log(this.mediaRecorder)
     let start = false
-    let recorder: any = null
+    Recorder.init()
     window.addEventListener('keydown', (e) => {
-      if (this.mediaRecorder && !start && e.keyCode === 32) {
-        h5recorder.get(function(rec: any) {
-          recorder = rec
-          recorder.start()
-        })
-        this.mediaRecorder.start()
+      if (!start && e.keyCode === 32) {
         start = true
+        Recorder.start()
       }
     })
 
-    window.addEventListener('keyup', (e) => {
-      if (this.mediaRecorder && start && e.keyCode === 32) {
-        this.mediaRecorder.stop()
-        recorder.stop()
-        // recorder.upload('http://127.0.0.1:8081/process_post', function(state: any, e: any) {
-        //   switch (state) {
-        //     case 'uploading':
-        //         //var percentComplete = Math.round(e.loaded * 100 / e.total) + '%';
-        //         break;
-        //     case 'ok':
-        //         //alert(e.target.responseText);
-        //         console.log(e)
-        //         alert("上传成功,在node的log中查看结果");
-        //         //window.location.href="VideoSearchServlet.do";
-        //         break;
-        //     case 'error':
-        //         alert("上传失败");
-        //         break;
-        //     case 'cancel':
-        //         alert("上传被取消");
-        //         break;
-        //   }
-        // })
+    window.addEventListener('keyup', async (e) => {
+      if (start && e.keyCode === 32) {
+        Recorder.stop()
+        const res: any = await Recorder.upload()
+        console.log('res:', res)
+        this.handleWord(res.result[0])
         start = false
       }
     })
-    
-    this.mediaRecorder.ondataavailable = (e) => {
-      console.log('====')
-      console.log(e)
-      console.log(e.data)
-      const formData = new FormData()
-      formData.append('voice', e.data, 'recorder.mp3')
-      console.log('formData', formData)
-      // this.socketClient.emit('send', {
-      //   data: e.data
-      // })
-      axios({
-        url: 'http://127.0.0.1:8081/process_post',
-        method: 'post',
-        data: formData
-      })
-      .then(res => {
-        console.log('结果:', res)
-      })
-    } 
+  }
+
+  private handleWord(str: string) {
+    if (str.indexOf('首页') > -1) {
+       // 命中首页，跳转首页
+      window.location.href = 'https://www.yy.com'
+    } else if (str.indexOf('弹幕') > -1) {
+      // 命中弹慕，发送弹慕
+      const danmu = str.split('弹幕')[1]
+      console.log('danmu:', danmu)
+    } else if (str.indexOf('直播间') > -1) {
+      // 命中直播间，跳转直播间
+      window.location.href = 'https://www.yy.com/54880976/54880976?tempId=16777217'
+    } else if (str.indexOf('个人页') > -1) {
+      // 命中个人页，跳转个人页
+      window.location.href = 'https://www.yy.com/u/40187'
+    } else if (str.indexOf('礼物') > -1) {
+      console.log('送礼:')
+    } else if (str.indexOf('取消关注') > -1 || str.indexOf('取关') > -1) {
+      console.log('取关行为')
+    } else if (str.indexOf('关注') > -1) {
+      console.log('关注行为')
+    }
   }
 }
 

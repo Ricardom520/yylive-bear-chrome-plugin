@@ -18,6 +18,8 @@ const gradientYellow: GradientColor[] = [
   }
 ]
 
+import { playVoice } from './utils/func'
+
 class Canvas implements CanvasStruct {
   readonly canvas: HTMLCanvasElement
 
@@ -31,15 +33,7 @@ class Canvas implements CanvasStruct {
 
   public dbclick(fn: Function) {
     this.canvas.addEventListener('dblclick', () => {
-      const audioDom = document.createElement('audio')
-      audioDom.src = 'https://web.yystatic.com/project/nearlive-static/mobile/voices/voice_02.mp3'
-      audioDom.autoplay = true
-      document.body.appendChild(audioDom)
-
-      audioDom.addEventListener('ended', function() {
-        document.body.removeChild(audioDom)
-      })
-
+      playVoice('https://web.yystatic.com/project/nearlive-static/mobile/voices/voice_02.mp3')
       fn()
       const ctx: CanvasRenderingContext2D = this.canvas.getContext('2d') as CanvasRenderingContext2D
 
