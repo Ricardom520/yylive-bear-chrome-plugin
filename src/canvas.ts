@@ -324,6 +324,14 @@ class Canvas implements CanvasStruct {
     ctx.fillStyle = 'black'
     ctx.fillText('按着回车说话~', 30, 160)
   }
+
+  public fillText(str: string, x: number, y: number) {
+    const ctx: CanvasRenderingContext2D  = this.canvas.getContext('2d') as CanvasRenderingContext2D
+    ctx.clearRect(30, 130, 100, 40)
+    ctx.font = '14px Verdana'
+    ctx.fillStyle = 'black'
+    ctx.fillText(str, x, y)
+  }
 }
 
 export default Canvas
