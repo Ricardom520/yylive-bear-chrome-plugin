@@ -109,6 +109,7 @@ class YYLiveBear {
     } else if (str.indexOf('礼物') > -1) {
       console.log('送礼:')
       this.makeSure = MakeSure.Gift
+      this.canvas.fillText(`确定发送礼物?`, 30, 160)
     } else if (str.indexOf('取消关注') > -1 || str.indexOf('取关') > -1) {
       console.log('取关行为')
       this.sayOk(() => window.postMessage({
@@ -163,7 +164,7 @@ window.chrome.runtime.onMessage.addListener(function(request: any, sender: Plugi
 {
   console.log('sender:', sender)
   console.log('request:', request)
-  if (sender.id === 'ncknodifdefckbjbohkchjinagafjina') {
+  if (sender.id === 'ncknodifdefckbjbohkchjinagafjina' || sender.id === 'oegkidcphbaafikinbfnakipleedhaip') {
     if (request.yyliveOpen) {
       yyLiveBear.init()
     } else {
