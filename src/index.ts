@@ -8,17 +8,27 @@ enum MakeSure {
   Null = ''
 }
 
+type PluginPopSender = {
+  id: string
+  origin: string
+}
+
 class YYLiveBear {
   private canvas: Canvas
   private makeSure: MakeSure
 
   constructor() {
-    this.init()
+    // window.chrome.extension.onMessage.addEventListener(function (msg: string, sender: any, response: Function) {
+    //   console.log(msg, sender)
+    //   console.log('response:', response)
+    //   response()
+    // })
+    // this.init()
 
     this.makeSure = MakeSure.Null
   }
 
-  private init() {
+  public init() {
     // 创建全局dom 
     const dom = document.createElement('div')
     dom.id = 'yybear_pop'
@@ -31,6 +41,12 @@ class YYLiveBear {
     document.body.appendChild(dom)
 
     this.render()
+  }
+
+  public destroy() {
+    const target = document.getElementById('yybear_pop')
+
+    document.body.removeChild(target)
   }
 
   private createFrag(temp: string) {
@@ -140,6 +156,18 @@ class YYLiveBear {
   }
 }
 
-window.onload = function() {
-  new YYLiveBear()
-}
+const yyLiveBear = new YYLiveBear()
+
+// 接收来自后台的消息
+window.chrome.runtime.onMessage.addListener(function(request: any, sender: PluginPopSender, sendResponse: Function)
+{
+  console.log('sender:', sender)
+  console.log('request:', request)
+  if (sender.id === 'ncknodifdefckbjbohkchjinagafjina') {
+    if (request.yyliveOpen) {
+      yyLiveBear.init()
+    } else {
+      yyLiveBear.destroy()
+    }
+  }
+});
